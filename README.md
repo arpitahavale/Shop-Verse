@@ -109,6 +109,18 @@ Example prompts:
 - “Gift for a runner”
 - “Bold accessories for a night out”
 
+This is how the ai works :
+sequenceDiagram
+  User->>API: "gift for a runner under $150"
+  API->>LLM: message + catalog snapshot
+  LLM->>API: tool call search_products(query, vibe, maxPrice)
+  API->>DB: search & score products
+  DB-->>API: Running Sneakers, Trail Daypack...
+  API->>LLM: tool results
+  LLM-->>API: natural reply + product IDs
+  API-->>User: reply + product cards
+
+
 ---
 
 ## Tech stack
