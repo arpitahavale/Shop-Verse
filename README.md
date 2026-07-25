@@ -110,6 +110,8 @@ Example prompts:
 - “Bold accessories for a night out”
 
 This is how the ai works :
+
+```
 sequenceDiagram
   User->>API: "gift for a runner under $150"
   API->>LLM: message + catalog snapshot
@@ -119,6 +121,8 @@ sequenceDiagram
   API->>LLM: tool results
   LLM-->>API: natural reply + product IDs
   API-->>User: reply + product cards
+
+  ```
 
 
 ---
