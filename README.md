@@ -1,43 +1,49 @@
-# ShopVerse — Local Postgres + Auth + Thin API
+# ShopVerse
 
-This project has two apps:
+Full-stack personalized e-commerce platform with JWT auth, PostgreSQL, and an AI shopping concierge.
 
-- `fe/` — React storefront (port 3000)
-- `be/` — Express API (port 5000) talking to local PostgreSQL
+| App | Folder | Port |
+|-----|--------|------|
+| Frontend | `fe/` | 3000 |
+| Backend API | `be/` | 5000 |
+| Database | PostgreSQL `shopverse` | 5432 |
 
-## 1. PostgreSQL + pgAdmin
+**Full architecture & role guide:** [`documents/SHOPVERSE-ARCHITECTURE.md`](documents/SHOPVERSE-ARCHITECTURE.md)
 
-1. Install PostgreSQL and open **pgAdmin**.
-2. Create a database named `shopverse`.
-3. Open Query Tool on `shopverse` and run, in order:
+---
+
+## Features
+
+- Multi-page storefront (Home, Shop, Categories, Product, Vibe Studio, Collections)
+- JWT login/register — entire store is login-gated
+- Cart, wishlist, orders persisted in PostgreSQL per user
+- Vibe Match — mood-based product ranking + bundle discount
+- AI Concierge — natural-language product picks + chat agent
+- Local product images (no external CDN dependency)
+
+---
+
+## Quick start
+
+### 1. Database (pgAdmin)
+
+1. Create database `shopverse`
+2. Run in order:
    - [`be/sql/01_schema.sql`](be/sql/01_schema.sql)
    - [`be/sql/02_seed.sql`](be/sql/02_seed.sql)
-4. Confirm tables: `users`, `products`, `cart_items`, `wishlist_items`, `orders`, `order_items`.
 
-### Connection string
-
-Edit [`be/.env`](be/.env) to match your Postgres password:
-
-```env
-PORT=5000
-DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/shopverse
-JWT_SECRET=shopverse_dev_jwt_secret_change_me
-CLIENT_ORIGIN=http://localhost:3000
-```
-
-Default example uses user `postgres` / password `postgres`.
-
-## 2. Start the API
+### 2. Backend
 
 ```bash
 cd be
+cp .env.example .env   # edit DATABASE_URL if needed
 npm install
 npm run dev
 ```
 
-Health check: [http://localhost:5000/api/health](http://localhost:5000/api/health)
+Health: http://localhost:5000/api/health
 
-## 3. Start the React app
+### 3. Frontend
 
 ```bash
 cd fe
@@ -45,30 +51,84 @@ npm install
 npm start
 ```
 
-App: [http://localhost:3000](http://localhost:3000)
+App: http://localhost:3000
 
-## Demo login
+### Demo login
 
-- Email: `demo@shopverse.com`
-- Password: `Demo@123`
+- **Email:** `demo@shopverse.com`
+- **Password:** `Demo@123`
 
-## Auth & data flow
+---
 
-- **All store pages require login** — guests are redirected to a standalone `/login` (or `/register`) screen with no shop navigation
-- Login / Register: JWT stored in `localStorage`
-- After sign-in: full access to home, shop, vibe, bag, wishlist, orders
-- Cart, wishlist, orders, and active vibe sync to Postgres for the logged-in user
+## Environment
 
-## Useful API routes
+**`be/.env`**
 
-| Method | Path | Auth |
-|--------|------|------|
-| POST | `/api/auth/register` | no |
-| POST | `/api/auth/login` | no |
-| GET | `/api/auth/me` | yes |
-| PATCH | `/api/auth/me/vibe` | yes |
-| GET | `/api/products` | no |
-| GET | `/api/products/:id` | no |
-| GET/PUT/DELETE | `/api/cart` | yes |
-| GET/POST/DELETE | `/api/wishlist` | yes |
-| GET/POST | `/api/orders` | yes |
+```env
+PORT=5000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/shopverse
+JWT_SECRET=shopverse_dev_jwt_secret_change_me
+CLIENT_ORIGIN=http://localhost:3000
+
+# Optional — enables real LLM agent (otherwise local agent works)
+# GROQ_API_KEY=gsk_...
+# OPENAI_API_KEY=sk-...
+# AI_MODEL=llama-3.3-70b-versatile
+```
+
+**`fe/.env`**
+
+```env
+REACT_APP_API_URL=http://localhost:5000
+```
+
+---
+
+## API overview
+
+| Area | Endpoints | Auth |
+|------|-----------|------|
+| Auth | `/api/auth/register`, `/login`, `/me`, `/me/vibe` | mixed |
+| Products | `/api/products`, `/api/products/:id` | no |
+| Cart | `/api/cart` | yes |
+| Wishlist | `/api/wishlist` | yes |
+| Orders | `/api/orders` | yes |
+| AI | `/api/ai/status`, `/recommend`, `/chat` | yes |
+
+---
+
+## AI Concierge
+
+- **Home → “Ask the catalog”** — type a need, get product picks
+- **Floating AI button** — chat on any store page
+- **Local agent** works without API key (searches real Postgres catalog)
+- **Optional LLM** — add `GROQ_API_KEY` or `OPENAI_API_KEY` for tool-calling agent
+
+Example prompts:
+- “Calm desk setup under $100”
+- “Gift for a runner”
+- “Bold accessories for a night out”
+
+---
+
+## Tech stack
+
+**Frontend:** React, React Router, Tailwind CSS, Framer Motion, Context API  
+**Backend:** Node.js, Express, pg, JWT, bcrypt  
+**Database:** PostgreSQL  
+**AI:** Local catalog agent + optional OpenAI/Groq LLM with tools
+
+---
+
+## Project structure
+
+```
+Shop-Verse/
+├── fe/                 React storefront
+├── be/                 Express REST API
+│   ├── sql/            Schema + seed
+│   └── src/
+│       ├── routes/     auth, products, cart, wishlist, orders, ai
+│       └── services/   aiAgent, aiCatalog
+└── documents/          Architecture docs
+```
