@@ -7,8 +7,15 @@ function AuthLayout() {
   return (
     <div className="auth-shell">
       <div className="auth-shell-bg" aria-hidden>
+        <div className="auth-shell-gradient" />
+        <div className="auth-shell-grid" />
+        <div className="auth-beam auth-beam-a" />
+        <div className="auth-beam auth-beam-b" />
         <div className="auth-orb auth-orb-a" />
         <div className="auth-orb auth-orb-b" />
+        <div className="auth-orb auth-orb-c" />
+        <div className="auth-orb auth-orb-d" />
+        <div className="auth-orb auth-orb-e" />
       </div>
 
       <header className="auth-shell-header">

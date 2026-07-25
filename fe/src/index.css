@@ -1551,27 +1551,32 @@
 
 /* ——— Empty / error / toast ——— */
 .empty-state {
-  position: relative;
   text-align: center;
   padding: 4rem 1.5rem;
-  border-radius: 1.75rem;
-  background: white;
-  border: 1px solid rgba(20, 33, 43, 0.06);
-  overflow: hidden;
 }
 
-.empty-state-orb {
-  position: absolute;
-  width: 10rem;
-  height: 10rem;
-  border-radius: 999px;
+.empty-state-icon {
+  position: relative;
+  z-index: 1;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto 1rem;
+  display: grid;
+  place-items: center;
+  border-radius: 1rem;
+  color: var(--tide);
   background: rgba(20, 184, 166, 0.12);
-  top: -3rem;
-  right: -2rem;
+  animation: pulseSoft 3s ease-in-out infinite;
+}
+
+.empty-state-icon svg {
+  width: 1.65rem;
+  height: 1.65rem;
 }
 
 .empty-state-title {
   position: relative;
+  z-index: 1;
   margin: 0 0 0.5rem;
   font-family: var(--font-display);
   font-size: 1.75rem;
@@ -1579,9 +1584,15 @@
 
 .empty-state-desc {
   position: relative;
+  z-index: 1;
   margin: 0 auto 1.25rem;
   max-width: 28rem;
   color: var(--ink-muted);
+}
+
+.empty-state .btn {
+  position: relative;
+  z-index: 1;
 }
 
 .error-panel {
@@ -1692,6 +1703,67 @@
   }
   50% {
     transform: translateY(-12px);
+  }
+}
+
+@keyframes cardOrbDrift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(18px, -14px) scale(1.06);
+  }
+  66% {
+    transform: translate(-12px, 10px) scale(0.94);
+  }
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes authGridPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes authBeamSweep {
+  0%,
+  100% {
+    transform: translateX(-30%) rotate(-18deg);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateX(30%) rotate(-18deg);
+    opacity: 0.35;
+  }
+}
+
+@keyframes authOrbFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(24px, -20px) scale(1.05);
+  }
+  50% {
+    transform: translate(-16px, 12px) scale(0.96);
+  }
+  75% {
+    transform: translate(12px, 18px) scale(1.02);
   }
 }
 
@@ -2337,10 +2409,7 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(20, 184, 166, 0.18), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 90% 0%, rgba(245, 158, 11, 0.14), transparent 50%),
-    linear-gradient(180deg, #f7faf8 0%, #e8efea 100%);
+  background: linear-gradient(180deg, #f7faf8 0%, #e8efea 100%);
 }
 
 .auth-shell-bg {
@@ -2349,29 +2418,101 @@
   pointer-events: none;
 }
 
+.auth-shell-gradient {
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(20, 184, 166, 0.28), transparent 42%),
+    radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.22), transparent 38%),
+    radial-gradient(circle at 70% 85%, rgba(15, 118, 110, 0.18), transparent 40%),
+    radial-gradient(circle at 10% 75%, rgba(20, 184, 166, 0.14), transparent 35%);
+  background-size: 200% 200%;
+  animation: gradientShift 14s ease-in-out infinite;
+}
+
+.auth-shell-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(20, 33, 43, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 33, 43, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black, transparent);
+  animation: authGridPulse 6s ease-in-out infinite;
+}
+
+.auth-beam {
+  position: absolute;
+  width: 140%;
+  height: 12rem;
+  left: -20%;
+  border-radius: 999px;
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.auth-beam-a {
+  top: 8%;
+  background: linear-gradient(90deg, transparent, rgba(20, 184, 166, 0.2), transparent);
+  animation: authBeamSweep 12s ease-in-out infinite;
+}
+
+.auth-beam-b {
+  bottom: 15%;
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.16), transparent);
+  animation: authBeamSweep 16s ease-in-out infinite reverse;
+}
+
 .auth-orb {
   position: absolute;
   border-radius: 999px;
-  filter: blur(8px);
-  opacity: 0.55;
+  filter: blur(12px);
+  opacity: 0.6;
 }
 
 .auth-orb-a {
-  width: 18rem;
-  height: 18rem;
-  background: rgba(20, 184, 166, 0.25);
-  top: -4rem;
-  right: -3rem;
-  animation: float 8s ease-in-out infinite;
+  width: 22rem;
+  height: 22rem;
+  background: rgba(20, 184, 166, 0.28);
+  top: -6rem;
+  right: -5rem;
+  animation: authOrbFloat 18s ease-in-out infinite;
 }
 
 .auth-orb-b {
+  width: 18rem;
+  height: 18rem;
+  background: rgba(245, 158, 11, 0.22);
+  bottom: 8%;
+  left: -6rem;
+  animation: authOrbFloat 22s ease-in-out infinite reverse;
+}
+
+.auth-orb-c {
+  width: 12rem;
+  height: 12rem;
+  background: rgba(15, 118, 110, 0.18);
+  top: 38%;
+  left: 58%;
+  animation: cardOrbDrift 16s ease-in-out infinite;
+}
+
+.auth-orb-d {
+  width: 9rem;
+  height: 9rem;
+  background: rgba(20, 184, 166, 0.16);
+  top: 18%;
+  left: 8%;
+  animation: float 9s ease-in-out infinite;
+}
+
+.auth-orb-e {
   width: 14rem;
   height: 14rem;
-  background: rgba(245, 158, 11, 0.2);
-  bottom: 10%;
-  left: -4rem;
-  animation: float 10s ease-in-out infinite reverse;
+  background: rgba(245, 158, 11, 0.14);
+  bottom: -4rem;
+  right: 18%;
+  animation: authOrbFloat 20s ease-in-out infinite 2s;
 }
 
 .auth-shell-header {
@@ -2413,10 +2554,10 @@
   width: min(26rem, 100%);
   padding: 1.85rem 1.6rem;
   border-radius: 1.6rem;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid rgba(20, 33, 43, 0.08);
-  box-shadow: 0 24px 50px -30px rgba(20, 33, 43, 0.4);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 24px 50px -30px rgba(20, 33, 43, 0.35);
+  backdrop-filter: blur(8px);
 }
 
 .auth-title {
@@ -2507,6 +2648,87 @@
 
 .auth-switch a:hover {
   text-decoration: underline;
+}
+
+/* ——— Animated card (login + empty states) ——— */
+.animated-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(20, 33, 43, 0.08);
+  box-shadow: 0 24px 50px -30px rgba(20, 33, 43, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.animated-card-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.animated-card-mesh {
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(20, 184, 166, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.14), transparent 40%),
+    linear-gradient(135deg, rgba(20, 184, 166, 0.06), rgba(245, 158, 11, 0.04));
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+}
+
+.animated-card-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(2px);
+}
+
+.animated-card-orb-a {
+  width: 9rem;
+  height: 9rem;
+  top: -2.5rem;
+  right: -2rem;
+  background: rgba(20, 184, 166, 0.2);
+  animation: cardOrbDrift 9s ease-in-out infinite;
+}
+
+.animated-card-orb-b {
+  width: 7rem;
+  height: 7rem;
+  bottom: -1.5rem;
+  left: -1.5rem;
+  background: rgba(245, 158, 11, 0.16);
+  animation: cardOrbDrift 11s ease-in-out infinite reverse;
+}
+
+.animated-card-orb-c {
+  width: 5rem;
+  height: 5rem;
+  top: 45%;
+  left: 60%;
+  background: rgba(15, 118, 110, 0.12);
+  animation: float 7s ease-in-out infinite;
+}
+
+.animated-card-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 58%
+  );
+  background-size: 220% 100%;
+  animation: shimmer-move 5s ease-in-out infinite;
+  opacity: 0.45;
+}
+
+.animated-card-content {
+  position: relative;
+  z-index: 1;
 }
 
 .mobile-nav-panel button.mobile-nav-link {

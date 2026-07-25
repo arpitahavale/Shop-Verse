@@ -32,8 +32,11 @@ const STOP = new Set([
   'for',
   'with',
   'under',
+  'above',
+  'over',
   'than',
   'less',
+  'more',
   'below',
   'need',
   'want',
@@ -49,6 +52,7 @@ const STOP = new Set([
   'picks',
   'idea',
   'ideas',
+  'least',
 ]);
 
 function tokenize(text = '') {
@@ -83,17 +87,60 @@ function detectVibe(query) {
   return bestScore > 0 ? best : null;
 }
 
-function extractMaxPrice(query) {
-  const under = query.match(/under\s*\$?\s*(\d+)/i);
-  if (under) return Number(under[1]);
-  const less = query.match(/(?:less than|below)\s*\$?\s*(\d+)/i);
-  if (less) return Number(less[1]);
-  const budget = query.match(/\$\s*(\d+)/);
-  if (budget) return Number(budget[1]);
-  return null;
+function extractPriceFilter(query = '') {
+  const text = String(query).replace(/\\/g, ' ').trim();
+
+  const range = text.match(
+    /(?:between|from)\s*\$?\s*(\d+(?:\.\d+)?)\s*(?:and|to|-)\s*\$?\s*(\d+(?:\.\d+)?)/i
+  );
+  if (range) {
+    const low = Math.min(Number(range[1]), Number(range[2]));
+    const high = Math.max(Number(range[1]), Number(range[2]));
+    return {
+      minPrice: low,
+      maxPrice: high,
+      label: `$${low}–$${high}`,
+    };
+  }
+
+  const minMatch = text.match(
+    /(?:above|over|more than|greater than|at least)\s*\$?\s*(\d+(?:\.\d+)?)/i
+  );
+  if (minMatch) {
+    const minPrice = Number(minMatch[1]);
+    return { minPrice, maxPrice: null, label: `above $${minPrice}` };
+  }
+
+  const maxMatch = text.match(
+    /(?:under|below|less than|upto|up to|max)\s*\$?\s*(\d+(?:\.\d+)?)/i
+  );
+  if (maxMatch) {
+    const maxPrice = Number(maxMatch[1]);
+    return { minPrice: null, maxPrice, label: `under $${maxPrice}` };
+  }
+
+  // Bare "$50" with no direction → treat as budget cap (under)
+  const budget = text.match(/\$\s*(\d+(?:\.\d+)?)/);
+  if (budget) {
+    const maxPrice = Number(budget[1]);
+    return { minPrice: null, maxPrice, label: `under $${maxPrice}` };
+  }
+
+  return { minPrice: null, maxPrice: null, label: null };
 }
 
-function scoreProduct(product, query, vibe, maxPrice) {
+/** @deprecated use extractPriceFilter */
+function extractMaxPrice(query) {
+  return extractPriceFilter(query).maxPrice;
+}
+
+function matchesPriceFilter(product, { minPrice, maxPrice }) {
+  if (minPrice != null && product.price < minPrice) return false;
+  if (maxPrice != null && product.price > maxPrice) return false;
+  return true;
+}
+
+function scoreProduct(product, query, vibe, priceFilter) {
   const hay = `${product.name} ${product.category} ${product.description} ${product.badge || ''}`.toLowerCase();
   const tokens = tokenize(query);
   let score = 0;
@@ -112,10 +159,14 @@ function scoreProduct(product, query, vibe, maxPrice) {
     if (vibeScore >= 70) reasons.push(`strong ${vibe} match (${vibeScore})`);
   }
 
-  if (maxPrice != null) {
-    if (product.price <= maxPrice) {
+  const { minPrice, maxPrice, label } = priceFilter || {};
+
+  if (minPrice != null || maxPrice != null) {
+    if (matchesPriceFilter(product, { minPrice, maxPrice })) {
       score += 12;
-      reasons.push(`within $${maxPrice}`);
+      if (label) reasons.push(label);
+      else if (minPrice != null) reasons.push(`above $${minPrice}`);
+      else reasons.push(`under $${maxPrice}`);
     } else {
       score -= 40;
     }
@@ -127,18 +178,30 @@ function scoreProduct(product, query, vibe, maxPrice) {
   return { score, reasons };
 }
 
-async function searchProducts({ query = '', vibe = null, maxPrice = null, limit = 4 } = {}) {
+async function searchProducts({
+  query = '',
+  vibe = null,
+  minPrice = null,
+  maxPrice = null,
+  limit = 4,
+} = {}) {
   const products = await getAllProducts();
   const detectedVibe = vibe || detectVibe(query);
-  const priceCap = maxPrice ?? extractMaxPrice(query);
+  const parsed = extractPriceFilter(query);
+  const priceFilter = {
+    minPrice: minPrice ?? parsed.minPrice,
+    maxPrice: maxPrice ?? parsed.maxPrice,
+    label: parsed.label,
+  };
 
   const ranked = products
+    .filter((product) => matchesPriceFilter(product, priceFilter))
     .map((product) => {
       const { score, reasons } = scoreProduct(
         product,
         query,
         detectedVibe,
-        priceCap
+        priceFilter
       );
       return { product, score, reasons };
     })
@@ -148,7 +211,9 @@ async function searchProducts({ query = '', vibe = null, maxPrice = null, limit 
 
   return {
     vibe: detectedVibe,
-    maxPrice: priceCap,
+    minPrice: priceFilter.minPrice,
+    maxPrice: priceFilter.maxPrice,
+    priceLabel: priceFilter.label,
     results: ranked,
   };
 }
@@ -172,5 +237,6 @@ module.exports = {
   searchProducts,
   detectVibe,
   extractMaxPrice,
+  extractPriceFilter,
   compactProduct,
 };

@@ -11,7 +11,7 @@ const TOOLS = [
     function: {
       name: 'search_products',
       description:
-        'Search ShopVerse catalog by natural language, optional vibe, and max price',
+        'Search ShopVerse catalog by natural language, optional vibe, min/max price',
       parameters: {
         type: 'object',
         properties: {
@@ -20,6 +20,7 @@ const TOOLS = [
             type: 'string',
             enum: ['focus', 'motion', 'nest', 'signal'],
           },
+          minPrice: { type: 'number' },
           maxPrice: { type: 'number' },
           limit: { type: 'number' },
         },
@@ -66,12 +67,15 @@ async function runTool(name, args = {}) {
     const data = await searchProducts({
       query: args.query || '',
       vibe: args.vibe || null,
+      minPrice: args.minPrice ?? null,
       maxPrice: args.maxPrice ?? null,
       limit: args.limit || 4,
     });
     return {
       vibe: data.vibe,
+      minPrice: data.minPrice,
       maxPrice: data.maxPrice,
+      priceLabel: data.priceLabel,
       products: data.results.map((r) => ({
         ...compactProduct(r.product),
         reason: r.reasons.join(', '),
@@ -94,7 +98,7 @@ async function localRecommend(query, limit = 4) {
   }));
 
   const vibeBit = data.vibe ? ` with a ${data.vibe} vibe` : '';
-  const priceBit = data.maxPrice != null ? ` under $${data.maxPrice}` : '';
+  const priceBit = data.priceLabel ? ` ${data.priceLabel}` : '';
   const reply =
     products.length > 0
       ? `I found ${products.length} picks${vibeBit}${priceBit} for “${query}".`
@@ -104,7 +108,12 @@ async function localRecommend(query, limit = 4) {
     mode: 'local-agent',
     reply,
     products,
-    meta: { vibe: data.vibe, maxPrice: data.maxPrice },
+    meta: {
+      vibe: data.vibe,
+      minPrice: data.minPrice,
+      maxPrice: data.maxPrice,
+      priceLabel: data.priceLabel,
+    },
   };
 }
 
@@ -112,7 +121,7 @@ async function localChat(message, history = []) {
   const lower = message.toLowerCase();
   if (
     /(hello|hi|hey)\b/.test(lower) &&
-    !/(find|gift|need|want|under|buy)/.test(lower)
+    !/(find|gift|need|want|under|above|over|buy)/.test(lower)
   ) {
     return {
       mode: 'local-agent',
