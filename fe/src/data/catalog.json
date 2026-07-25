@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Noise-Cancel Headphones",
+    "price": 249.99,
+    "category": "Electronics",
+    "rating": 4.8,
+    "image": "/products/1.jpg",
+    "description": "Premium over-ear headphones with 30-hour battery life and studio-quality sound. Tuned for deep work sessions without fatigue.",
+    "badge": "Best Seller",
+    "vibes": { "focus": 96, "motion": 55, "nest": 40, "signal": 72 }
+  },
+  {
+    "id": 2,
+    "name": "Minimalist Leather Watch",
+    "price": 189.0,
+    "category": "Accessories",
+    "rating": 4.6,
+    "image": "/products/2.jpg",
+    "description": "Handcrafted Italian leather strap with sapphire crystal glass. Quiet luxury that signals intention.",
+    "badge": "New",
+    "vibes": { "focus": 70, "motion": 35, "nest": 48, "signal": 92 }
+  },
+  {
+    "id": 3,
+    "name": "Organic Cotton Hoodie",
+    "price": 79.99,
+    "category": "Clothing",
+    "rating": 4.5,
+    "image": "/products/3.jpg",
+    "description": "Soft, sustainable hoodie perfect for everyday comfort — the layer you live in at home and on the go.",
+    "badge": null,
+    "vibes": { "focus": 62, "motion": 58, "nest": 94, "signal": 40 }
+  },
+  {
+    "id": 4,
+    "name": "Smart Fitness Tracker",
+    "price": 129.99,
+    "category": "Electronics",
+    "rating": 4.4,
+    "image": "/products/4.jpg",
+    "description": "Track steps, heart rate, sleep, and workouts with a vibrant AMOLED display. Built for people who move.",
+    "badge": "Sale",
+    "vibes": { "focus": 48, "motion": 97, "nest": 35, "signal": 60 }
+  },
+  {
+    "id": 5,
+    "name": "Ceramic Pour-Over Set",
+    "price": 54.99,
+    "category": "Home",
+    "rating": 4.7,
+    "image": "/products/5.jpg",
+    "description": "Artisan ceramic dripper and carafe for the perfect morning brew. Turns coffee into a calm ritual.",
+    "badge": null,
+    "vibes": { "focus": 78, "motion": 20, "nest": 98, "signal": 45 }
+  },
+  {
+    "id": 6,
+    "name": "Running Sneakers Pro",
+    "price": 159.99,
+    "category": "Footwear",
+    "rating": 4.9,
+    "image": "/products/6.jpg",
+    "description": "Lightweight mesh upper with responsive cushioning for long runs. Engineered bounce that keeps you moving.",
+    "badge": "Top Rated",
+    "vibes": { "focus": 35, "motion": 99, "nest": 25, "signal": 80 }
+  },
+  {
+    "id": 7,
+    "name": "Linen Desk Mat",
+    "price": 42.0,
+    "category": "Home",
+    "rating": 4.3,
+    "image": "/products/7.jpg",
+    "description": "Natural linen desk surface that softens your workspace and keeps tools grounded during long focus blocks.",
+    "badge": null,
+    "vibes": { "focus": 90, "motion": 15, "nest": 85, "signal": 30 }
+  },
+  {
+    "id": 8,
+    "name": "Statement Crossbody",
+    "price": 118.0,
+    "category": "Accessories",
+    "rating": 4.6,
+    "image": "/products/8.jpg",
+    "description": "Structured silhouette with bold hardware — the bag that finishes an outfit before you leave the door.",
+    "badge": "Limited",
+    "vibes": { "focus": 40, "motion": 50, "nest": 35, "signal": 95 }
+  },
+  {
+    "id": 9,
+    "name": "Merino Travel Tee",
+    "price": 68.0,
+    "category": "Clothing",
+    "rating": 4.7,
+    "image": "/products/9.jpg",
+    "description": "Temperature-regulating merino that packs flat and still looks sharp after a full day out.",
+    "badge": "New",
+    "vibes": { "focus": 55, "motion": 78, "nest": 60, "signal": 70 }
+  },
+  {
+    "id": 10,
+    "name": "Studio Desk Lamp",
+    "price": 96.5,
+    "category": "Home",
+    "rating": 4.5,
+    "image": "/products/10.jpg",
+    "description": "Warm directional light with a matte arm — made for late focus sessions without eye strain.",
+    "badge": null,
+    "vibes": { "focus": 93, "motion": 20, "nest": 88, "signal": 42 }
+  },
+  {
+    "id": 11,
+    "name": "Trail Daypack 20L",
+    "price": 134.0,
+    "category": "Accessories",
+    "rating": 4.8,
+    "image": "/products/11.jpg",
+    "description": "Lightweight pack with bounce-free straps for city commute and weekend trails.",
+    "badge": "Best Seller",
+    "vibes": { "focus": 45, "motion": 94, "nest": 30, "signal": 65 }
+  },
+  {
+    "id": 12,
+    "name": "Cloud Foam Slides",
+    "price": 49.99,
+    "category": "Footwear",
+    "rating": 4.4,
+    "image": "/products/12.jpg",
+    "description": "Post-run recovery slides with plush foam and a grippy outsole for house-to-street ease.",
+    "badge": "Sale",
+    "vibes": { "focus": 30, "motion": 72, "nest": 90, "signal": 35 }
+  }
+]
