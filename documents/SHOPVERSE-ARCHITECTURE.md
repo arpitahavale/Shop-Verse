@@ -1,5 +1,7 @@
 # ShopVerse — Full Architecture & Role Guide
 
+> **New to the project?** Start with [`PROJECT-GUIDE.md`](PROJECT-GUIDE.md) — it explains everything in simple language (languages, storage, every API file, AI layer).
+
 This document explains **what each part does**, **how they connect**, and **what the AI layer adds** on top of the normal e-commerce flow.
 
 ---

@@ -9,7 +9,8 @@ Read this README once — the diagrams below show exactly how the frontend, API,
 | Backend API | `be/` | 5000 |
 | Database | PostgreSQL `shopverse` | 5432 |
 
-**Deeper guide:** [`documents/SHOPVERSE-ARCHITECTURE.md`](documents/SHOPVERSE-ARCHITECTURE.md)
+**Deeper guide:** [`documents/PROJECT-GUIDE.md`](documents/PROJECT-GUIDE.md) (beginner-friendly, full FE/BE/API/AI map)  
+**Architecture reference:** [`documents/SHOPVERSE-ARCHITECTURE.md`](documents/SHOPVERSE-ARCHITECTURE.md)
 
 ---
 
